@@ -1,0 +1,24 @@
+# Fails if review.yml is not exactly what build.sh generates from ai_review.py.
+# Push to main only: this is a public repo, stranger PRs must not trigger jobs here.
+name: drift-check
+on:
+  push:
+    branches: [main]
+permissions: {}
+jobs:
+  drift:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Rebuild and compare (no third-party actions)
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          git clone --quiet --no-checkout "https://github.com/${REPO}.git" src
+          cd src && git checkout --quiet "$SHA"
+          python3 -m py_compile ai_review.py
+          ./build.sh
+          git diff --exit-code -- .github/workflows/review.yml

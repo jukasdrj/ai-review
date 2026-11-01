@@ -1,0 +1,20 @@
+# <repo>/.github/workflows/ai-review.yml  — identical in every opted-in repo.
+# Required-check context produced by this file: "ai-review / review"
+name: ai-review
+on:
+  pull_request:            # never pull_request_target: forks get no secret and a read-only token
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions: {}
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  ai-review:
+    uses: jukasdrj/ai-review/.github/workflows/review.yml@<40-char commit SHA of jukasdrj/ai-review>
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+    with:
+      fail_on: STOP
