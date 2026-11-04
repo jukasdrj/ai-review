@@ -10,8 +10,8 @@ on:
   workflow_call:
     inputs:
       fail_on:      { type: string, default: "STOP" }               # "STOP" or "STOP,REVISE"
-      models:       { type: string, default: "glm-5.3,mistral-large-4" }  # primary,fallback
-      second_model: { type: string, default: "mistral-large-4" }    # high-risk paths only; "" = off
+      models:       { type: string, default: "glm-5.3,deepseek-v4.1-flash:1017" }  # primary,fallback
+      second_model: { type: string, default: "deepseek-v4.1-flash:1017" }  # high-risk paths only; "" = off
       think:        { type: string, default: "low" }
       max_chars:    { type: number, default: 120000 }
       fork_policy:  { type: string, default: "fail" }                # fork PRs: "fail" or "pass"

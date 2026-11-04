@@ -22,8 +22,8 @@ Use `pull_request` only (never `pull_request_target`). Pass the secret explicitl
 | input | default | meaning |
 |---|---|---|
 | `fail_on` | `STOP` | verdicts that fail the check (`STOP` or `STOP,REVISE`) |
-| `models` | `glm-5.3,mistral-large-4` | primary,fallback |
-| `second_model` | `mistral-large-4` | extra opinion for high-risk paths; `""` = off |
+| `models` | `glm-5.3,deepseek-v4.1-flash:1017` | primary,fallback |
+| `second_model` | `deepseek-v4.1-flash:1017` | extra opinion for high-risk paths; `""` = off (skipped if it already answered as the fallback) |
 | `think` | `low` | Ollama reasoning effort |
 | `max_chars` | `120000` | diff budget (~30k tokens) |
 | `fork_policy` | `fail` | fork PRs get no secret, so they cannot be reviewed: `fail` or `pass` |
@@ -44,3 +44,4 @@ and reported as a finding. Token-shaped secrets are redacted before the diff is 
 
 ## Change the reviewer
 Edit `ai_review.py`, run `./build.sh`, commit both files, tag a release, then bump the pinned SHA in callers.
+See [CHANGELOG.md](CHANGELOG.md).
