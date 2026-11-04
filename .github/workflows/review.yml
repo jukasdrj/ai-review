@@ -5,8 +5,8 @@ on:
   workflow_call:
     inputs:
       fail_on:      { type: string, default: "STOP" }               # "STOP" or "STOP,REVISE"
-      models:       { type: string, default: "glm-5.3,mistral-large-4" }  # primary,fallback
-      second_model: { type: string, default: "mistral-large-4" }    # high-risk paths only; "" = off
+      models:       { type: string, default: "glm-5.3,deepseek-v4.1-flash:1017" }  # primary,fallback
+      second_model: { type: string, default: "deepseek-v4.1-flash:1017" }  # high-risk paths only; "" = off
       think:        { type: string, default: "low" }
       max_chars:    { type: number, default: 120000 }
       fork_policy:  { type: string, default: "fail" }                # fork PRs: "fail" or "pass"
@@ -44,8 +44,8 @@ jobs:
             OLLAMA_API_KEY   required for a real review (missing -> "unavailable", exit 0)
             GH_TOKEN         token for the GitHub API (in Actions: GITHUB_TOKEN)
             REPO, PR_NUMBER  e.g. jukasdrj/swiftwing, 32
-            AI_MODELS        primary,fallback   (default glm-5.3,mistral-large-4)
-            AI_SECOND_MODEL  extra model for high-risk paths (default mistral-large-4; "" disables)
+            AI_MODELS        primary,fallback   (default glm-5.3,deepseek-v4.1-flash:1017)
+            AI_SECOND_MODEL  extra model for high-risk paths (default deepseek-v4.1-flash:1017; "" disables)
             AI_FAIL_ON       verdicts that fail the check (default STOP)
             AI_THINK         reasoning effort passed to Ollama (low|medium|high; unset = model default)
             AI_DEADLINE_S    total model-time budget, then UNAVAILABLE (default 600)
@@ -234,8 +234,8 @@ jobs:
               repo, pr = env("REPO"), env("PR_NUMBER")
               dry = env("DRY_RUN") == "1"
               out = env("OUT_DIR", ".")
-              models = [m for m in env("AI_MODELS", "glm-5.3,mistral-large-4").split(",") if m]
-              second = env("AI_SECOND_MODEL", "mistral-large-4")
+              models = [m for m in env("AI_MODELS", "glm-5.3,deepseek-v4.1-flash:1017").split(",") if m]
+              second = env("AI_SECOND_MODEL", "deepseek-v4.1-flash:1017")
               fail_on = [x for x in env("AI_FAIL_ON", "STOP").split(",") if x]
               budget = int(env("AI_MAX_CHARS", "120000"))
           
