@@ -42,5 +42,22 @@ Use `pull_request` only (never `pull_request_target`). Pass the secret explicitl
 The review is advisory; the human merger decides. Prompt-injection text in the PR is treated as data
 and reported as a finding. Token-shaped secrets are redacted before the diff is sent.
 
+## Local critic: `tools/review.sh`
+A Bash script (needs `curl`, `jq`, GNU `sed`) for a skeptical second-model critique of a plan or diff,
+outside Actions. Same Ollama Cloud models as the action (`glm-5.3` primary, `deepseek-v4.1-flash:1017`
+second / fast).
+
+```sh
+export OLLAMA_API_KEY=...            # or put it in $CRITIC_ENV_FILE (default ~/.config/grok-critic/env)
+tools/review.sh PLAN.md              # primary critic
+git diff origin/main... | tools/review.sh -2 -   # primary + second opinion, both printed
+```
+Overrides: `CRITIC_PRIMARY` (or `OLLAMA_MODEL`), `CRITIC_SECOND`, `CRITIC_FAST`, `CRITIC_ENV_FILE`; second and
+fast default to the same model. `CRITIC_ENV_FILE` is **sourced as shell** only when `OLLAMA_API_KEY` is unset, so
+keep it `chmod 600` and owned by you. `-2` exits 0 if at least one critic answered. The key is never echoed
+or put on a command line;
+token-shaped strings are crudely redacted before sending. It sends the text to Ollama Cloud, so do not
+pipe in anything you would not paste there.
+
 ## Change the reviewer
 Edit `ai_review.py`, run `./build.sh`, commit both files, tag a release, then bump the pinned SHA in callers.
